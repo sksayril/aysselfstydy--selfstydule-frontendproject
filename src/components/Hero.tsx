@@ -3,29 +3,68 @@ import { GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
+  const [heroImages, setHeroImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Collection of hero images - optimized for mobile and desktop
-  const heroImages = [
-    {
-      desktop: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-      mobile: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
-    },
-    {
-      desktop: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-      mobile: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
-    },
-    {
-      desktop: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-      mobile: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
-    },
-    {
-      desktop: "https://images.unsplash.com/photo-1629872430082-93d8912beccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
-      mobile: "https://images.unsplash.com/photo-1629872430082-93d8912beccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
-    }
-  ];
+  // Fetch banner images from API
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch('http://localhost:3100/api/get/hero-banners');
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch banners: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+          setHeroImages(result.data);
+        } else {
+          // Fallback images in case API returns empty data
+          setHeroImages([
+            {
+              title: "Default Banner 1",
+              desktop: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+              mobile: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
+            },
+            {
+              title: "Default Banner 2",
+              desktop: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+              mobile: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
+            }
+          ]);
+        }
+      } catch (err) {
+        console.error("Error fetching banner images:", err);
+        setError(err.message);
+        // Set fallback images
+        setHeroImages([
+          {
+            title: "Default Banner 1",
+            desktop: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+            mobile: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
+          },
+          {
+            title: "Default Banner 2",
+            desktop: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80",
+            mobile: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=1000&q=80"
+          }
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBanners();
+  }, []);
 
   // Automatic image change every 5 seconds
   useEffect(() => {
+    if (heroImages.length === 0) return;
+    
     const interval = setInterval(() => {
       setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
     }, 5000);
@@ -35,15 +74,43 @@ const Hero = () => {
 
   // Manual navigation functions
   const goToPrevious = () => {
+    if (heroImages.length === 0) return;
     setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
   };
 
   const goToNext = () => {
+    if (heroImages.length === 0) return;
     setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
   };
 
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 py-8 md:py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center h-[300px]">
+            <div className="animate-pulse text-blue-600">Loading banners...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error && heroImages.length === 0) {
+    return (
+      <div className="bg-gradient-to-r from-green-50 to-blue-50 py-8 md:py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center h-[300px] text-red-500">
+            <p>Error loading banners: {error}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="bg-gray-100 py-8 md:py-12">
+    <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 py-8 md:py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between">
           <div className="w-full md:w-1/2 mb-8 md:mb-0 order-2 md:order-1">
@@ -75,14 +142,14 @@ const Hero = () => {
                   {/* Mobile image */}
                   <img
                     src={image.mobile}
-                    alt={`Learning environment ${index + 1}`}
+                    alt={image.title || `Banner ${index + 1}`}
                     className="w-full h-full object-cover md:hidden"
                   />
 
                   {/* Desktop image */}
                   <img
                     src={image.desktop}
-                    alt={`Learning environment ${index + 1}`}
+                    alt={image.title || `Banner ${index + 1}`}
                     className="w-full h-full object-cover hidden md:block"
                   />
                 </div>
@@ -95,28 +162,33 @@ const Hero = () => {
               <button
                 onClick={goToPrevious}
                 className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-md z-10 text-blue-600 transition-all duration-200 hover:scale-110"
+                aria-label="Previous banner"
               >
                 <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               <button
                 onClick={goToNext}
                 className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 sm:p-2 rounded-full shadow-md z-10 text-blue-600 transition-all duration-200 hover:scale-110"
+                aria-label="Next banner"
               >
                 <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
 
-              {/* Indicator dots */}
-              <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1.5 sm:space-x-2">
-                {heroImages.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImage(index)}
-                    className={`w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
-                      index === currentImage ? 'bg-white scale-125' : 'bg-white/50'
-                    }`}
-                  ></button>
-                ))}
-              </div>
+              {/* Indicator dots - Only show if more than one image */}
+              {heroImages.length > 1 && (
+                <div className="absolute bottom-3 sm:bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-1.5 sm:space-x-2">
+                  {heroImages.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentImage(index)}
+                      className={`w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
+                        index === currentImage ? 'bg-white scale-125' : 'bg-white/50'
+                      }`}
+                      aria-label={`Go to banner ${index + 1}`}
+                    ></button>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

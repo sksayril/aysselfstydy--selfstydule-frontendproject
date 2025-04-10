@@ -1,77 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, ChevronRight, X, ChevronLeft, ChevronUp } from 'lucide-react';
 
-// Expanded blog data with full content and additional images
-const blogs = [
-  {
-    id: 1,
-    title: "Understanding Quantum Physics: A Beginner's Guide",
-    excerpt: "Dive into the fascinating world of quantum mechanics and discover how it shapes our understanding of the universe...",
-    content: "Quantum physics, also known as quantum mechanics, is a fundamental theory in physics that describes nature at the smallest scales of energy levels of atoms and subatomic particles. Unlike classical physics, quantum mechanics provides a mathematical description of the dual particle-like and wave-like behavior and interactions of matter and energy.\n\nKey concepts include:\n\n• Wave-Particle Duality: Objects exhibit both wave and particle properties\n• Heisenberg's Uncertainty Principle: The more precisely the position is determined, the less precisely the momentum is known\n• Quantum Entanglement: Particles become interconnected and the quantum state of each cannot be described independently\n\nThese principles have led to technological breakthroughs including lasers, transistors, and magnetic resonance imaging.",
-    image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3",
-    gallery: [
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3",
-      "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?ixlib=rb-4.0.3",
-      "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3"
-    ],
-    category: "Physics",
-    readTime: "5 min read",
-    date: "March 6, 2025",
-  },
-  {
-    id: 2,
-    title: "The Rise of Artificial Intelligence in Education",
-    excerpt: "Explore how AI is transforming the educational landscape and creating new opportunities for learning...",
-    content: "Artificial Intelligence is revolutionizing education by creating personalized learning experiences tailored to individual student needs. These AI-powered systems can adapt in real-time, providing immediate feedback and adjusting difficulty levels based on student performance.\n\nSome key applications include:\n\n• Intelligent Tutoring Systems: AI tutors that provide personalized guidance and support\n• Automated Grading: Systems that can evaluate essays and open-ended questions\n• Content Recommendation: AI that suggests relevant resources based on learning patterns\n• Administrative Efficiency: Automating routine tasks so educators can focus on teaching\n\nAs we move forward, the integration of AI in education promises to make learning more accessible, engaging, and effective for students of all abilities and backgrounds.",
-    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3",
-    gallery: [
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3",
-      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3",
-      "https://images.unsplash.com/photo-1526378787940-576a539ba69d?ixlib=rb-4.0.3"
-    ],
-    category: "Technology",
-    readTime: "7 min read",
-    date: "March 6, 2025",
-  },
-  {
-    id: 3,
-    title: "Biology Breakthroughs: Latest Discoveries in 2025",
-    excerpt: "Stay updated with the most recent discoveries in biological sciences and their impact on medicine...",
-    content: "The field of biology continues to evolve rapidly in 2025, with breakthrough discoveries that hold tremendous promise for human health and our understanding of life itself.\n\nRecent advances include:\n\n• CRISPR 2.0: Enhanced gene editing techniques with greater precision and fewer off-target effects\n• Organoid Development: Lab-grown miniature organs that mimic real organ functions for drug testing and disease modeling\n• Microbiome Therapies: New treatments based on gut bacteria manipulation to address various diseases\n• Synthetic Biology: Creating artificial biological systems with novel functions\n\nThese developments are already transforming medical treatments, environmental conservation efforts, and our fundamental understanding of biological processes. The convergence of biology with other fields like artificial intelligence and nanotechnology is opening up entirely new frontiers of scientific exploration.",
-    image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?ixlib=rb-4.0.3",
-    gallery: [
-      "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3",
-      "https://images.unsplash.com/photo-1579154204601-01588f351e67?ixlib=rb-4.0.3",
-      "https://images.unsplash.com/photo-1530210124550-912dc1381cb8?ixlib=rb-4.0.3"
-    ],
-    category: "Biology",
-    readTime: "6 min read",
-    date: "March 6, 2025",
-  },
-];
-
-// Featured blog with extended content
-const featuredBlog = {
-  id: 0,
-  title: "The Future of Education: Trends to Watch in 2025",
-  excerpt: "Discover the emerging trends that are shaping the future of education, from AI-powered learning to virtual reality classrooms...",
-  content: "Education is undergoing a profound transformation in 2025, driven by technological innovation, changing workforce demands, and evolving pedagogical approaches.\n\nThe most significant trends include:\n\n• Immersive Learning: Virtual and augmented reality creating deeply engaging educational experiences\n• AI-Powered Personalization: Tailoring education to individual learning styles, pace, and interests\n• Microlearning: Bite-sized learning modules designed for efficiency and retention\n• Skills-Based Credentials: A shift from traditional degrees to specific skill certification\n• Global Classroom Connectivity: Technology enabling worldwide collaboration between students\n\nThese changes are democratizing access to quality education, breaking down geographical barriers, and preparing students for careers that may not even exist yet. As we embrace these innovations, the traditional boundaries of education continue to expand, creating lifelong learning opportunities for people of all ages and backgrounds.",
-  image: "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-4.0.3",
-  gallery: [
-    "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3",
-    "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-4.0.3",
-    "https://images.unsplash.com/photo-1509062522246-3755977927d7?ixlib=rb-4.0.3"
-  ],
-  category: "Education",
-  readTime: "8 min read",
-  date: "March 6, 2025",
-};
-
 const Blog = () => {
-  const [selectedBlog, setSelectedBlog] = useState<typeof featuredBlog | null>(null);
+  const [blogs, setBlogs] = useState([]);
+  const [featuredBlog, setFeaturedBlog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedBlog, setSelectedBlog] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const openBlogModal = (blog: typeof featuredBlog) => {
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('http://localhost:3100/api/get/blogs');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch blogs');
+        }
+        
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          // Set the first blog as featured and the rest as regular blogs
+          setFeaturedBlog(data[0]);
+          setBlogs(data.slice(1));
+        }
+        
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const openBlogModal = (blog) => {
     setSelectedBlog(blog);
     setCurrentImageIndex(0);
     document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
@@ -96,12 +62,42 @@ const Blog = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="flex flex-col items-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="mt-4 text-lg font-medium text-gray-600">Loading blogs...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="bg-red-50 p-6 rounded-lg border border-red-200 max-w-lg">
+          <p className="text-xl font-medium text-red-600 mb-2">Unable to load blogs</p>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!featuredBlog) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-xl font-medium text-gray-600">No blogs available</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Latest Blog Posts</h1>
+          <h1 className="text-4xl font-bold mb-4 text-gray-800">Latest Blog Posts</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Stay updated with the latest educational insights, study tips, and academic news
           </p>
@@ -109,34 +105,41 @@ const Blog = () => {
 
         {/* Featured Post */}
         <div className="mb-12">
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden transform transition hover:shadow-2xl">
             <div className="md:flex">
-              <div className="md:w-2/3">
+              <div className="md:w-1/2 lg:w-3/5 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-500/20 z-10"></div>
                 <img
                   src={featuredBlog.image}
                   alt={featuredBlog.title}
-                  className="w-full h-64 md:h-full object-cover"
+                  className="w-full h-64 md:h-96 object-cover transform hover:scale-105 transition-transform duration-500"
                 />
-              </div>
-              <div className="md:w-1/3 p-6 md:p-8">
-                <div className="bg-blue-100 text-blue-600 text-sm font-medium px-3 py-1 rounded-full inline-block mb-4">
-                  Featured
+                <div className="absolute top-4 left-4 z-20">
+                  <div className="bg-blue-500 text-white text-sm font-medium px-3 py-1 rounded-full inline-block">
+                    Featured
+                  </div>
                 </div>
-                <h2 className="text-2xl font-bold mb-4">
+              </div>
+              <div className="md:w-1/2 lg:w-2/5 p-6 md:p-8 flex flex-col justify-center">
+                <h2 className="text-2xl font-bold mb-4 text-gray-800">
                   {featuredBlog.title}
                 </h2>
                 <p className="text-gray-600 mb-6">
                   {featuredBlog.excerpt}
                 </p>
-                <div className="flex items-center text-sm text-gray-500 mb-6">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  <span>{featuredBlog.date}</span>
-                  <Clock className="w-4 h-4 ml-4 mr-2" />
-                  <span>{featuredBlog.readTime}</span>
+                <div className="flex items-center text-sm text-gray-500 mb-6 space-x-4">
+                  <div className="flex items-center">
+                    <Calendar className="w-4 h-4 mr-2 text-blue-500" />
+                    <span>{featuredBlog.date}</span>
+                  </div>
+                  <div className="flex items-center">
+                    <Clock className="w-4 h-4 mr-2 text-blue-500" />
+                    <span>{featuredBlog.readTime}</span>
+                  </div>
                 </div>
                 <button
                   onClick={() => openBlogModal(featuredBlog)}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all duration-300 transform hover:scale-105 flex items-center"
+                  className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all duration-300 transform hover:scale-105 flex items-center w-fit"
                 >
                   Read More
                   <ChevronRight className="w-4 h-4 ml-2" />
@@ -150,39 +153,44 @@ const Blog = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogs.map((blog) => (
             <div
-              key={blog.id}
-              className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+              key={blog._id}
+              className="bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
             >
-              <img
-                src={blog.image}
-                alt={blog.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-1 rounded-full">
+              <div className="relative overflow-hidden h-48">
+                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 z-10"></div>
+                <img
+                  src={blog.image}
+                  alt={blog.title}
+                  className="w-full h-48 object-cover transform hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute top-3 right-3 z-20">
+                  <span className="bg-blue-500 text-white text-xs font-medium px-2.5 py-1 rounded-full">
                     {blog.category}
                   </span>
-                  <div className="text-gray-500 text-sm ml-auto flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {blog.readTime}
-                  </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2">{blog.title}</h3>
-                <p className="text-gray-600 text-sm mb-4">{blog.excerpt}</p>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold mb-2 text-gray-800 line-clamp-2">{blog.title}</h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-3">{blog.excerpt}</p>
                 <div className="flex items-center justify-between">
-                  <div className="text-gray-500 text-sm flex items-center">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    {blog.date}
+                  <div className="text-gray-500 text-sm flex items-center space-x-4">
+                    <div className="flex items-center">
+                      <Calendar className="w-4 h-4 mr-1 text-blue-500" />
+                      <span>{blog.date}</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Clock className="w-4 h-4 mr-1 text-blue-500" />
+                      <span>{blog.readTime}</span>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => openBlogModal(blog)}
-                    className="text-blue-600 font-medium hover:text-blue-700 transition-colors flex items-center hover:underline"
-                  >
-                    Read More
-                    <ChevronRight className="w-4 h-4 ml-1" />
-                  </button>
                 </div>
+                <button
+                  onClick={() => openBlogModal(blog)}
+                  className="mt-4 text-blue-600 font-medium hover:text-blue-700 transition-colors flex items-center hover:underline"
+                >
+                  Read More
+                  <ChevronRight className="w-4 h-4 ml-1" />
+                </button>
               </div>
             </div>
           ))}
@@ -191,14 +199,14 @@ const Blog = () => {
 
       {/* Blog Modal Popup */}
       {selectedBlog && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={closeBlogModal}>
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 animate-fadeIn backdrop-blur-sm" onClick={closeBlogModal}>
           <div
             className="bg-white rounded-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col animate-scaleIn"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header with close button */}
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-xl font-bold">{selectedBlog.title}</h2>
+            <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
+              <h2 className="text-xl font-bold text-gray-800">{selectedBlog.title}</h2>
               <button
                 onClick={closeBlogModal}
                 className="p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -209,54 +217,60 @@ const Blog = () => {
 
             <div className="overflow-y-auto flex-grow">
               {/* Image Gallery */}
-              <div className="relative">
-                <div className="aspect-w-16 aspect-h-9 bg-gray-100">
-                  <img
-                    src={selectedBlog.gallery[currentImageIndex]}
-                    alt={`${selectedBlog.title} - image ${currentImageIndex + 1}`}
-                    className="object-cover w-full h-[300px]"
-                  />
-                </div>
+              {selectedBlog.gallery && selectedBlog.gallery.length > 0 && (
+                <div className="relative">
+                  <div className="bg-gray-100 h-64 md:h-80">
+                    <img
+                      src={selectedBlog.gallery[currentImageIndex]}
+                      alt={`${selectedBlog.title} - image ${currentImageIndex + 1}`}
+                      className="object-contain w-full h-full"
+                    />
+                  </div>
 
-                {/* Gallery Navigation */}
-                <button
-                  onClick={prevImage}
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-colors"
-                >
-                  <ChevronLeft className="w-5 h-5 text-gray-600" />
-                </button>
-                <button
-                  onClick={nextImage}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-2 rounded-full shadow-md transition-colors"
-                >
-                  <ChevronRight className="w-5 h-5 text-gray-600" />
-                </button>
+                  {/* Gallery Navigation - only show if more than 1 image */}
+                  {selectedBlog.gallery.length > 1 && (
+                    <>
+                      <button
+                        onClick={prevImage}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-md transition-colors"
+                      >
+                        <ChevronLeft className="w-5 h-5 text-gray-700" />
+                      </button>
+                      <button
+                        onClick={nextImage}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white p-2 rounded-full shadow-md transition-colors"
+                      >
+                        <ChevronRight className="w-5 h-5 text-gray-700" />
+                      </button>
 
-                {/* Image Indicator */}
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/50 rounded-full px-3 py-1 text-xs text-white">
-                  {currentImageIndex + 1} / {selectedBlog.gallery.length}
+                      {/* Image Indicator */}
+                      <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black/70 rounded-full px-3 py-1 text-xs text-white">
+                        {currentImageIndex + 1} / {selectedBlog.gallery.length}
+                      </div>
+                    </>
+                  )}
                 </div>
-              </div>
+              )}
 
               {/* Blog Content */}
               <div className="p-6">
-                <div className="flex items-center mb-4 space-x-4">
+                <div className="flex flex-wrap items-center mb-6 gap-3">
                   <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-1 rounded-full">
                     {selectedBlog.category}
                   </span>
                   <div className="text-gray-500 text-sm flex items-center">
-                    <Calendar className="w-4 h-4 mr-1" />
-                    {selectedBlog.date}
+                    <Calendar className="w-4 h-4 mr-1 text-blue-500" />
+                    <span>{selectedBlog.date}</span>
                   </div>
                   <div className="text-gray-500 text-sm flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {selectedBlog.readTime}
+                    <Clock className="w-4 h-4 mr-1 text-blue-500" />
+                    <span>{selectedBlog.readTime}</span>
                   </div>
                 </div>
 
                 {/* Article Content */}
                 <div className="prose prose-blue max-w-none">
-                  {selectedBlog.content.split('\n\n').map((paragraph, index) => (
+                  {selectedBlog.content.split('\\n\\n').map((paragraph, index) => (
                     <p key={index} className="mb-4 text-gray-700 leading-relaxed">
                       {paragraph}
                     </p>
@@ -265,24 +279,28 @@ const Blog = () => {
               </div>
             </div>
 
-            {/* Thumbnail Gallery */}
-            <div className="p-4 border-t flex space-x-2 overflow-x-auto">
-              {selectedBlog.gallery.map((img, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`flex-shrink-0 rounded-md overflow-hidden border-2 transition-all ${
-                    currentImageIndex === index ? 'border-blue-500 scale-105' : 'border-transparent'
-                  }`}
-                >
-                  <img
-                    src={img}
-                    alt={`Thumbnail ${index + 1}`}
-                    className="h-16 w-24 object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            {/* Thumbnail Gallery - only show if more than 1 image */}
+            {selectedBlog.gallery && selectedBlog.gallery.length > 1 && (
+              <div className="p-4 border-t flex space-x-2 overflow-x-auto bg-gray-50">
+                {selectedBlog.gallery.map((img, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`flex-shrink-0 rounded-md overflow-hidden transition-all ${
+                      currentImageIndex === index 
+                        ? 'ring-2 ring-blue-500 transform scale-105' 
+                        : 'ring-1 ring-gray-200 hover:ring-blue-300'
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt={`Thumbnail ${index + 1}`}
+                      className="h-16 w-24 object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
 
             {/* Back to Top Button */}
             <button
@@ -297,6 +315,27 @@ const Blog = () => {
           </div>
         </div>
       )}
+
+      {/* Add some CSS animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes scaleIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
+        
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+        
+        .animate-scaleIn {
+          animation: scaleIn 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
