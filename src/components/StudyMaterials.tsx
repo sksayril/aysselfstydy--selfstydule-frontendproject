@@ -20,7 +20,7 @@ const StudyMaterials = () => {
   const [lightboxAnimation, setLightboxAnimation] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  const API_URL = '/api';
+  const API_URL = 'https://api.notesmarket.in/api';
 
   useEffect(() => {
     const fetchSubcategories = async () => {
