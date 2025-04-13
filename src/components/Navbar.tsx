@@ -103,8 +103,8 @@ const Navbar = () => {
               </button>
               <Link to="/" className="flex items-center">
                 <span className="text-2xl font-bold">
-                  <span className="text-white">Self</span>
-                  <span className="text-yellow-300">Studys</span>
+                  <span className="text-white">Notes</span>
+                  <span className="text-yellow-300">Market</span>
                 </span>
               </Link>
             </div>

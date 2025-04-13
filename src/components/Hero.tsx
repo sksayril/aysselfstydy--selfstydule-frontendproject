@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { GraduationCap, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const [heroImages, setHeroImages] = useState([]);
+  const [heroImages, setHeroImages] = useState<{ title: string; desktop: string; mobile: string; }[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const handleMockTestClick = () => {
+    navigate('/quiz');
+  };
 
   // Fetch banner images from API
   useEffect(() => {
@@ -123,10 +128,14 @@ const Hero = () => {
             <p className="text-lg mb-8">
               Trusted by <span className="text-blue-600 font-bold">2Cr+ USERS</span>
             </p>
-            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 flex items-center transform transition-all duration-300 hover:scale-105 shadow-md">
-              <GraduationCap className="mr-2" />
-              FREE - Mock Test
-            </button>
+            <button 
+    onClick={handleMockTestClick}
+    className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 flex items-center transform transition-all duration-300 hover:scale-105 shadow-md"
+  >
+    <GraduationCap className="mr-2" />
+    FREE - Mock Test
+  </button>
+
           </div>
 
           {/* Image Carousel - Fixed for mobile */}

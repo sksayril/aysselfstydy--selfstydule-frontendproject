@@ -2,17 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Hero from './Hero';
 import LatestUpdates from './LatestUpdates';
+import SocialMediaCarousel from './SocialMediaCarousel';
 import {
   Book,
-  ChevronLeft,
-  ChevronRight,
   ArrowRight,
   Download,
   Users,
   BookOpen,
   Award,
   BrainCircuit,
-  BookOpenCheck,
   BookCheck,
   FileText
 } from 'lucide-react';
@@ -21,12 +19,7 @@ const Home = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const socialScrollRef = useRef(null);
-
-  // Auto-scroll functionality for social media
-  const [autoScrollActive, setAutoScrollActive] = useState(true);
-  const autoScrollIntervalRef = useRef(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -50,38 +43,12 @@ const Home = () => {
     fetchCategories();
   }, []);
 
-  // Setup auto-scrolling for social media carousel
-  useEffect(() => {
-    if (autoScrollActive && socialScrollRef.current) {
-      autoScrollIntervalRef.current = setInterval(() => {
-        if (socialScrollRef.current) {
-          // Check if we're at the end and need to reset
-          const { scrollLeft, scrollWidth, clientWidth } = socialScrollRef.current;
-
-          if (scrollLeft + clientWidth >= scrollWidth - 10) {
-            // We're at the end, reset to start
-            socialScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
-          } else {
-            // Continue scrolling
-            socialScrollRef.current.scrollBy({ left: 100, behavior: 'smooth' });
-          }
-        }
-      }, 3000);
-    }
-
-    return () => {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-      }
-    };
-  }, [autoScrollActive]);
-
-  const handleMaterialClick = (categoryId) => {
+  const handleMaterialClick = (categoryId: string) => {
     navigate(`/study-materials/${categoryId}`);
   };
 
   // Map category names to colors for visual distinction
-  const getCategoryColor = (index) => {
+  const getCategoryColor = (index: number) => {
     const colors = ['bg-gradient-to-r from-blue-500 to-blue-700',
                    'bg-gradient-to-r from-green-500 to-green-700',
                    'bg-gradient-to-r from-purple-500 to-purple-700',
@@ -89,37 +56,6 @@ const Home = () => {
                    'bg-gradient-to-r from-red-500 to-red-700',
                    'bg-gradient-to-r from-indigo-500 to-indigo-700'];
     return colors[index % colors.length];
-  };
-
-  // Social media platforms with enhanced styling
-  const socialPlatforms = [
-    { name: 'WhatsApp', color: 'bg-gradient-to-r from-green-400 to-green-600', icon: 'fab fa-whatsapp' },
-    { name: 'Telegram', color: 'bg-gradient-to-r from-blue-400 to-blue-600', icon: 'fab fa-telegram' },
-    { name: 'Facebook', color: 'bg-gradient-to-r from-blue-500 to-blue-700', icon: 'fab fa-facebook' },
-    { name: 'Instagram', color: 'bg-gradient-to-r from-pink-500 to-purple-600', icon: 'fab fa-instagram' },
-    { name: 'YouTube', color: 'bg-gradient-to-r from-red-500 to-red-700', icon: 'fab fa-youtube' },
-    { name: 'Twitter', color: 'bg-gradient-to-r from-blue-300 to-blue-500', icon: 'fab fa-twitter' },
-    { name: 'LinkedIn', color: 'bg-gradient-to-r from-blue-600 to-blue-800', icon: 'fab fa-linkedin' },
-    { name: 'Pinterest', color: 'bg-gradient-to-r from-red-500 to-red-600', icon: 'fab fa-pinterest' }
-  ];
-
-  const scrollSocial = (direction) => {
-    if (socialScrollRef.current) {
-      const scrollAmount = direction === 'next' ? 300 : -300;
-      socialScrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
-
-  // Pause auto-scroll when user interacts with arrows
-  const handleSocialNavigation = (direction) => {
-    // Temporarily disable auto-scrolling
-    setAutoScrollActive(false);
-    scrollSocial(direction);
-
-    // Re-enable auto-scrolling after a delay
-    setTimeout(() => {
-      setAutoScrollActive(true);
-    }, 5000);
   };
 
   return (
@@ -292,55 +228,8 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Social Connect Carousel Section with Auto-Scroll */}
-      <div className="py-16 bg-gradient-to-b from-blue-50 to-purple-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-2 relative inline-block">
-              <span className="relative z-10">Stay Connected With</span>
-              <span className="absolute bottom-0 left-0 w-full h-3 bg-blue-300 opacity-50 z-0"></span>
-            </h2>
-            <h3 className="text-3xl font-bold mt-2">
-              <span className="text-blue-600">Self</span>
-              <span className="text-green-600">Studys</span>
-            </h3>
-          </div>
-
-          <div className="relative">
-            <div
-              className="overflow-x-auto hide-scrollbar flex flex-nowrap space-x-4 py-4"
-              ref={socialScrollRef}
-              onMouseEnter={() => setAutoScrollActive(false)}
-              onMouseLeave={() => setAutoScrollActive(true)}
-            >
-              {/* Duplicate platforms at the beginning for seamless loop */}
-              {socialPlatforms.concat(socialPlatforms).map((social, index) => (
-                <button
-                  key={`${social.name}-${index}`}
-                  className={`flex-none ${social.color} text-white py-4 px-6 rounded-xl shadow-md hover:shadow-xl transform transition-all duration-300 hover:scale-105 min-w-[160px] flex items-center justify-center`}
-                >
-                  <i className={`${social.icon} mr-2`}></i>
-                  <span>{social.name}</span>
-                </button>
-              ))}
-            </div>
-
-            {/* Social Carousel Controls */}
-            <button
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 -ml-4 bg-white p-2 rounded-full shadow-md text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 z-10"
-              onClick={() => handleSocialNavigation('prev')}
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-            <button
-              className="absolute right-0 top-1/2 transform -translate-y-1/2 -mr-4 bg-white p-2 rounded-full shadow-md text-blue-600 hover:bg-blue-600 hover:text-white transition-all duration-300 z-10"
-              onClick={() => handleSocialNavigation('next')}
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Social Media Carousel Component */}
+      <SocialMediaCarousel />
 
       {/* App Download Section */}
       <div className="py-16 bg-gradient-to-r from-purple-50 to-blue-50">
@@ -349,9 +238,9 @@ const Home = () => {
             <div className="md:w-1/2 p-8 md:p-12">
               <div className="inline-block bg-blue-100 text-blue-600 px-4 py-1 rounded-full text-sm font-medium mb-4">Mobile App</div>
               <h2 className="text-3xl font-bold mb-4">
-                <span className="text-blue-600">Self</span>
-                <span className="text-green-600">Studys</span>
-                {' '}is Available on
+                <span className="text-blue-600">Notes</span>
+                <span className="text-green-600">Markets</span>
+                {' '}is Comming Soon
               </h2>
               <h3 className="text-4xl font-bold mb-6 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">Play Store</h3>
               <p className="text-gray-600 mb-8 text-lg">
@@ -360,7 +249,7 @@ const Home = () => {
               </p>
               <button className="bg-black text-white px-8 py-4 rounded-lg hover:bg-gray-800 transition-colors duration-200 transform hover:scale-105 flex items-center">
                 <Download className="mr-2 w-5 h-5" />
-                <span>Download App</span>
+                <span>Somming Soon</span>
               </button>
             </div>
             <div className="md:w-1/2 relative">
