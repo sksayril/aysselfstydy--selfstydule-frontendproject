@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://7cvccltb-3100.inc1.devtunnels.ms',
+        target: 'https://api.notesmarket.in',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path

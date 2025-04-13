@@ -13,7 +13,7 @@ const Blog = () => {
     const fetchBlogs = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3100/api/get/blogs');
+        const response = await fetch('https://api.notesmarket.in/api/get/blogs');
         
         if (!response.ok) {
           throw new Error('Failed to fetch blogs');

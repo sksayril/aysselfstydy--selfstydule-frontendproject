@@ -24,7 +24,7 @@ const Home = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch('https://7cvccltb-3100.inc1.devtunnels.ms/api/categories/parents');
+        const response = await fetch('https://api.notesmarket.in/api/categories/parents');
         if (!response.ok) {
           throw new Error('Failed to fetch categories');
         }

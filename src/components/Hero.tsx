@@ -17,7 +17,7 @@ const Hero = () => {
     const fetchBanners = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('http://localhost:3100/api/get/hero-banners');
+        const response = await fetch('https://api.notesmarket.in/api/get/hero-banners');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch banners: ${response.status}`);

@@ -19,7 +19,7 @@ const QuizApp = () => {
     const fetchQuizzes = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3100/api/getall/quiz');
+        const response = await fetch('https://api.notesmarket.in/api/getall/quiz');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
