@@ -10,8 +10,9 @@ const Footer = () => {
           <div className="text-3xl font-bold mb-3">
             <span className="text-blue-400">Notes</span>
             <span className="text-green-400">Market</span>
+
           </div>
-          <p className="text-gray-400 text-center">Your complete resource for educational materials</p>
+          <p className="text-gray-400 text-center">Your Complete Platform to Get Free NOTES, PYQ'S and Other Educational Resources</p>
         </div>
 
         {/* Educational Links Section */}
@@ -81,9 +82,10 @@ const Footer = () => {
             </div>
             <div className="text-sm text-gray-400">
               © {new Date().getFullYear()} NotesMarket. All rights reserved.
+              
             </div>
-            <div className="text-sm text-gray-400">
-            Developed By Criptocode Technologies Pvt. Ltd.            </div>
+            {/* <div className="text-sm text-gray-400">
+            Developed By Criptocode Technologies Pvt. Ltd.            </div> */}
           </div>
         </div>
       </div>

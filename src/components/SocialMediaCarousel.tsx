@@ -108,17 +108,21 @@ const SocialMediaCarousel = () => {
 
   return (
     <div className="py-16 bg-gradient-to-b from-blue-50 to-purple-50">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-2 relative inline-block">
-            <span className="relative z-10">Stay Connected With</span>
-            <span className="absolute bottom-0 left-0 w-full h-3 bg-blue-300 opacity-50 z-0"></span>
-          </h2>
-          <h3 className="text-3xl font-bold mt-2">
-            <span className="text-blue-600">Notes'</span>
-            <span className="text-green-600">Marketing</span>
-          </h3>
-        </div>
+        <div className="container mx-auto px-4">
+    <div className="text-center mb-12">
+      <h2 className="text-4xl font-bold mb-2 relative inline-block">
+        <span >Stay Connected With Us On Our Social Media Handles</span>
+        {/* <span className="absolute bottom-0 left-0 w-full h-3 bg-gradient-to-r from-blue-300 to-purple-300 opacity-50 z-0 rounded-full"></span> */}
+      </h2>
+      <h3 className="text-3xl font-bold mt-2">
+        <span className="text-blue-600">Notes'</span>
+        <span className="text-green-600">Market</span>
+      </h3>
+      <p className="text-gray-700 mt-4 max-w-xl mx-auto text-lg">
+        
+      </p>
+    </div>
+    
 
         <div className="relative">
           <div

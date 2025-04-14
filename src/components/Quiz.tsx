@@ -140,16 +140,27 @@ const QuizApp = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Quiz Platform</h1>
-            <p className="text-xl text-gray-600">Select a quiz to test your knowledge</p>
-          </motion.div>
-          
+        <motion.div 
+  className="text-center mb-12"
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5 }}
+>
+  <div className="flex items-center justify-center gap-3 mb-4">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21h8m-4-4v4m-6.364-7.364A9 9 0 015 9V5a2 2 0 012-2h10a2 2 0 012 2v4a9 9 0 01-1.636 5.636A7.968 7.968 0 0112 17a7.968 7.968 0 01-5.364-2.364z" />
+    </svg>
+    <div className="text-center mt-6">
+  <button className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-lg bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-orange-500 hover:to-yellow-400 shadow-xl transition duration-300 ease-in-out">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+    </svg>
+    Quiz Time 
+  </button>
+</div>  </div>
+  <p className="text-xl text-gray-600">Select a quiz to test your knowledge</p>
+</motion.div>
+
           <motion.div 
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             initial={{ opacity: 0 }}
