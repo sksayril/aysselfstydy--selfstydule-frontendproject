@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { GraduationCap, ChevronLeft, ChevronRight, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import NotificationBanner from './NotificationBanner'; // Import the new component
 
 const Hero = () => {
   const [currentImage, setCurrentImage] = useState(0);
@@ -119,6 +120,8 @@ const Hero = () => {
   if (isLoading) {
     return (
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-0 mt-0">
+                <NotificationBanner url="https://woxsen.edu.in/apply" />
+
         {/* Loading content */}
         <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
           <div className="flex items-center gap-2">
@@ -130,6 +133,8 @@ const Hero = () => {
         <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
           <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
         </div>
+        
+        {/* Add the Notification Banner after the top banners */}
         
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center h-32">
@@ -144,6 +149,8 @@ const Hero = () => {
   if (error && heroImages.length === 0) {
     return (
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-0 mt-0">
+                <NotificationBanner url="https://woxsen.edu.in/apply" />
+
         {/* Error content */}
         <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
           <div className="flex items-center gap-2">
@@ -156,6 +163,8 @@ const Hero = () => {
           <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
         </div>
         
+        {/* Add the Notification Banner after the top banners */}
+        
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-center h-32 text-red-500">
             <p>Error loading banners: {error}</p>
@@ -167,6 +176,8 @@ const Hero = () => {
 
   return (
     <div className="bg-gradient-to-r from-green-50 via-teal-50 to-blue-50 py-0 md:py-0 mt-0">
+            <NotificationBanner url="https://woxsen.edu.in/apply" />
+
       {/* Top banner to fill the gap - visible on all screens */}
       <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
         <div className="flex items-center gap-2">
@@ -180,6 +191,8 @@ const Hero = () => {
       <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
         <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
       </div>
+      
+      {/* Add the Notification Banner after the top banners */}
       
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center">

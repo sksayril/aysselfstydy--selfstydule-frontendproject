@@ -13,43 +13,43 @@ const SocialMediaCarousel = () => {
       name: 'WhatsApp', 
       color: 'bg-gradient-to-r from-green-400 to-green-600', 
       icon: <MessageCircle className="w-5 h-5" />,
-      link: 'https://whatsapp.com'
+      link: 'https://whatsapp.com/channel/0029VbAgHAAGk1FjmR9p4v0V'
     },
     { 
       name: 'Telegram', 
       color: 'bg-gradient-to-r from-blue-400 to-blue-600', 
       icon: <SendHorizontal className="w-5 h-5" />,
-      link: 'https://t.me' 
+      link: 'https://t.me/notesmarketofficial' 
     },
     { 
       name: 'Facebook', 
       color: 'bg-gradient-to-r from-blue-500 to-blue-700', 
       icon: <Facebook className="w-5 h-5" />,
-      link: 'https://facebook.com' 
+      link: 'https://www.instagram.com/notes.market?igsh=MTVjOHNla2EzcHpzYg==' 
     },
     { 
       name: 'Instagram', 
       color: 'bg-gradient-to-r from-pink-500 to-purple-600', 
       icon: <Instagram className="w-5 h-5" />,
-      link: 'https://instagram.com' 
+      link: 'https://www.instagram.com/notes.market?igsh=MTVjOHNla2EzcHpzYg==' 
     },
     { 
       name: 'YouTube', 
       color: 'bg-gradient-to-r from-red-500 to-red-700', 
       icon: <Youtube className="w-5 h-5" />,
-      link: 'https://youtube.com' 
+      link: 'https://t.me/notesmarketofficial' 
     },
     { 
       name: 'Twitter', 
       color: 'bg-gradient-to-r from-blue-300 to-blue-500', 
       icon: <Twitter className="w-5 h-5" />,
-      link: 'https://twitter.com' 
+      link: 'https://www.instagram.com/notes.market?igsh=MTVjOHNla2EzcHpzYg==' 
     },
     { 
       name: 'LinkedIn', 
       color: 'bg-gradient-to-r from-blue-600 to-blue-800', 
       icon: <Linkedin className="w-5 h-5" />,
-      link: 'https://linkedin.com' 
+      link: 'https://whatsapp.com/channel/0029VbAgHAAGk1FjmR9p4v0V' 
     },
     { 
       name: 'Pinterest', 
@@ -57,7 +57,7 @@ const SocialMediaCarousel = () => {
       icon: <div className="flex items-center justify-center w-5 h-5 rounded-full bg-white">
               <div className="w-3 h-3 bg-red-600 rounded-full"></div>
             </div>,
-      link: 'https://pinterest.com' 
+      link: 'https://whatsapp.com/channel/0029VbAgHAAGk1FjmR9p4v0V' 
     }
   ];
 

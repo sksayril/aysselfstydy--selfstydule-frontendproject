@@ -14,7 +14,7 @@ import {
   BookCheck,
   FileText
 } from 'lucide-react';
-
+import bannermobileapp from '/pragraph.png';
 const Home = () => {
   const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
@@ -263,7 +263,7 @@ const Home = () => {
             <div className="md:w-1/2 relative">
               <div className="bg-gradient-to-br from-blue-500 to-green-500 absolute inset-0 opacity-10"></div>
               <img
-                src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                src={bannermobileapp}
                 alt="Mobile App"
                 className="w-full h-full object-cover object-center"
               />
