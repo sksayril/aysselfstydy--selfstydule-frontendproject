@@ -16,7 +16,7 @@ const LatestUpdates = () => {
     const fetchUpdates = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:3300/api/latest-updates');
+        const response = await fetch('https://api.notesmarket.in/api/latest-updates');
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
