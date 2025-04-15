@@ -16,14 +16,25 @@ const LatestUpdates = () => {
     const fetchUpdates = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://api.notesmarket.in/api/latest-updates');
+        const response = await fetch('http://localhost:3300/api/latest-updates');
         
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         
         const result = await response.json();
-        setUpdates(result.data || []);
+        
+        // Sort updates to prioritize isTop:true items
+        const sortedUpdates = (result.data || []).sort((a, b) => {
+          // If a is top and b is not, a comes first
+          if (a.isTop && !b.isTop) return -1;
+          // If b is top and a is not, b comes first
+          if (!a.isTop && b.isTop) return 1;
+          // Otherwise, keep original order
+          return 0;
+        });
+        
+        setUpdates(sortedUpdates);
         setLoading(false);
       } catch (err) {
         console.error("Failed to fetch updates:", err);
@@ -201,6 +212,11 @@ const LatestUpdates = () => {
                     alt={update.title}
                     className="w-full h-48 object-cover"
                   />
+                  {update.isTop && (
+                    <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-full">
+                      TOP
+                    </div>
+                  )}
                   {index === activeIndex && (
                     <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
                       NEW
@@ -309,6 +325,11 @@ const LatestUpdates = () => {
                   alt={selectedUpdate.title}
                   className="w-full h-[300px] object-cover"
                 />
+                {selectedUpdate.isTop && (
+                  <div className="absolute top-4 left-4 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full">
+                    TOP
+                  </div>
+                )}
               </div>
 
               {/* Update Content */}

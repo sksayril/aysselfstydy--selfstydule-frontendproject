@@ -290,11 +290,25 @@ const Home = () => {
   <div className="container mx-auto px-4">
     
     <div className="text-center mb-12">
-    <button className="flex items-center gap-2 px-6 py-3 rounded-xl text-white font-semibold text-2xl bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg mx-auto">
-  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 0a2 2 0 012 2v16a2 2 0 01-2 2m0-18a2 2 0 00-2 2v16a2 2 0 002 2m-4-6h8" />
+    <button className="flex items-center gap-3 px-6 py-3 rounded-xl text-white font-semibold text-2xl bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg mx-auto">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-7 w-7 text-white align-middle -mt-[1px]"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M4 19.5A2.5 2.5 0 016.5 17H20" />
+    <path d="M4 4.5A2.5 2.5 0 016.5 7H20" />
+    <path d="M4 12h16" />
   </svg>
-        Our Numbers Are Loyal For Us      </button>
+  Our Numbers Are Loyal For Us
+</button>
+
+
         <div className="mt-6">
       <p className="text-3xl font-bold text-blue-600">5Cr+ Trusted Students & Educators</p>
     </div>

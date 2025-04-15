@@ -8,6 +8,7 @@ const Hero = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  
   const handleMockTestClick = () => {
     navigate('/quiz');
   };
@@ -17,7 +18,7 @@ const Hero = () => {
     const fetchBanners = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch('https://api.notesmarket.in/api/get/hero-banners');
+        const response = await fetch('http://localhost:3300/api/get/hero-banners');
         
         if (!response.ok) {
           throw new Error(`Failed to fetch banners: ${response.status}`);
@@ -82,21 +83,43 @@ const Hero = () => {
   }, [heroImages.length]);
 
   // Manual navigation functions
-  const goToPrevious = () => {
+  const goToPrevious = (e) => {
+    e.stopPropagation(); // Prevent banner click when clicking navigation
     if (heroImages.length === 0) return;
     setCurrentImage((prev) => (prev === 0 ? heroImages.length - 1 : prev - 1));
   };
 
-  const goToNext = () => {
+  const goToNext = (e) => {
+    e.stopPropagation(); // Prevent banner click when clicking navigation
     if (heroImages.length === 0) return;
     setCurrentImage((prev) => (prev === heroImages.length - 1 ? 0 : prev + 1));
+  };
+
+  // Direct navigation to banner URL or Google.com as fallback
+  const handleBannerClick = (banner) => {
+    // Add debugging information
+    console.log("Banner clicked with ID:", banner._id);
+    console.log("Banner title:", banner.title);
+    console.log("Banner URL property exists:", banner.hasOwnProperty('url'));
+    console.log("Banner URL value:", banner.url);
+    
+    // Check if the banner has a URL
+    if (banner && banner.hasOwnProperty('url') && banner.url && banner.url.trim() !== '') {
+      // Open the banner's specific URL in a new tab
+      console.log("Redirecting to banner URL:", banner.url);
+      window.open(banner.url, '_blank');
+    } else {
+      // If no URL is provided, open Google.com as fallback in a new tab
+      console.log("No valid URL found, redirecting to Google.com");
+      window.open('https://www.google.com', '_blank');
+    }
   };
 
   // Show loading state
   if (isLoading) {
     return (
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-0 mt-0">
-        {/* Top banner to fill the gap */}
+        {/* Loading content */}
         <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5" />
@@ -104,7 +127,6 @@ const Hero = () => {
           </div>
         </div>
         
-        {/* Specific mobile announcement banner */}
         <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
           <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
         </div>
@@ -122,10 +144,14 @@ const Hero = () => {
   if (error && heroImages.length === 0) {
     return (
       <div className="bg-gradient-to-r from-green-50 to-blue-50 py-0 mt-0">
-        {/* Top banner to fill the gap */}
+        {/* Error content */}
+        <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white py-3 px-4 flex items-center justify-center">
+          <div className="flex items-center gap-2">
+            <Award className="w-5 h-5" />
+            <span className="font-medium">Note's Market Means Toppers Choice</span>
+          </div>
+        </div>
         
-        
-        {/* Specific mobile announcement banner */}
         <div className="bg-blue-600 text-white text-center py-2 px-4 md:hidden">
           <p className="text-sm font-medium">Unlock premium study materials for 100% free!</p>
         </div>
@@ -181,50 +207,54 @@ const Hero = () => {
           {/* Image Carousel - Second on mobile, right on desktop */}
           <div className="w-full md:w-2/3 relative rounded-lg overflow-hidden shadow-xl order-2 md:order-2 mt-4 md:mt-0">
             <div className="relative overflow-hidden w-full" style={{ paddingBottom: "40%" }}>
-              {heroImages.map((image, index) => (
-                <div
-                  key={index}
-                  className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
-                    index === currentImage ? 'opacity-100' : 'opacity-0'
-                  }`}
-                >
-                  <a 
-                    href={image.url || "#"} 
-                    target="_blank" 
-                    rel="nofollow sponsored" 
-                    onClick={(e) => !image.url && e.preventDefault()}
-                    className="block w-full h-full"
-                    data-campid="62"
-                    data-source="slider"
+              {heroImages.map((image, index) => {
+                // Only render the current image to avoid multiple click handlers
+                return (
+                  <div
+                    key={index}
+                    className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
+                      index === currentImage ? 'opacity-100 z-10' : 'opacity-0 -z-10'
+                    }`}
                   >
-                    {/* Mobile image */}
-                    <img
-                      src={image.mobile}
-                      alt={image.title || `Banner ${index + 1}`}
-                      className="w-full h-full object-cover md:hidden"
-                    />
+                    {/* Banner container - clickable area */}
+                    {index === currentImage && (
+                      <div 
+                        className="block w-full h-full cursor-pointer"
+                        onClick={() => handleBannerClick(heroImages[currentImage])}
+                        data-campid={image._id || "banner"}
+                        data-source="slider"
+                        data-index={index}
+                      >
+                        {/* Mobile image */}
+                        <img
+                          src={image.mobile}
+                          alt={image.title || `Banner ${index + 1}`}
+                          className="w-full h-full object-cover md:hidden"
+                        />
 
-                    {/* Desktop image */}
-                    <img
-                      src={image.desktop}
-                      alt={image.title || `Banner ${index + 1}`}
-                      className="w-full h-full object-cover hidden md:block"
-                    />
-                  </a>
-                </div>
-              ))}
+                        {/* Desktop image */}
+                        <img
+                          src={image.desktop}
+                          alt={image.title || `Banner ${index + 1}`}
+                          className="w-full h-full object-cover hidden md:block"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
 
               {/* Navigation buttons */}
               <button
                 onClick={goToPrevious}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md z-10 text-blue-600 transition-all duration-200 hover:scale-110"
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md z-20 text-blue-600 transition-all duration-200 hover:scale-110"
                 aria-label="Previous banner"
               >
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <button
                 onClick={goToNext}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md z-10 text-blue-600 transition-all duration-200 hover:scale-110"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 hover:bg-white p-1.5 rounded-full shadow-md z-20 text-blue-600 transition-all duration-200 hover:scale-110"
                 aria-label="Next banner"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -232,11 +262,14 @@ const Hero = () => {
 
               {/* Indicator dots */}
               {heroImages.length > 1 && (
-                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1.5">
+                <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-1.5 z-20">
                   {heroImages.map((_, index) => (
                     <button
                       key={index}
-                      onClick={() => setCurrentImage(index)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent banner click when clicking indicators
+                        setCurrentImage(index);
+                      }}
                       className={`w-2 h-2 rounded-full transition-all duration-300 ${
                         index === currentImage ? 'bg-white scale-125' : 'bg-white/50'
                       }`}
