@@ -269,7 +269,7 @@ const Home = () => {
               />
 
               {/* App features overlay */}
-              <div className="absolute bottom-8 left-8 right-8 flex flex-wrap gap-3">
+              {/* <div className="absolute bottom-8 left-8 right-8 flex flex-wrap gap-3">
                 <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-sm text-sm">
                   <span className="font-medium text-green-600">✓</span> Offline Access
                 </div>
@@ -279,7 +279,7 @@ const Home = () => {
                 <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-sm text-sm">
                   <span className="font-medium text-green-600">✓</span> Interactive Learning
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
