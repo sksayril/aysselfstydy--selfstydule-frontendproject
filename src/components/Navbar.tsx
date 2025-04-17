@@ -287,7 +287,7 @@ const Navbar = () => {
       </div>
 
       {/* Add padding to main content to account for bottom navigation on mobile */}
-      <div className="md:hidden pb-16" />
+      {/* <div className="md:hidden pb-16" /> */}
     </>
   );
 };
