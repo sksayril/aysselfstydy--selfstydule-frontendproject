@@ -126,15 +126,15 @@ const LatestUpdates = () => {
 
   if (loading) {
     return (
-      <div className="py-12 bg-white">
+      <div className="py-8 md:py-12 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
+          <div className="flex justify-between items-center mb-6 md:mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
               LATEST UPDATES
             </h2>
           </div>
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+          <div className="flex justify-center items-center h-48 md:h-64">
+            <div className="animate-spin rounded-full h-10 w-10 md:h-12 md:w-12 border-t-2 border-b-2 border-blue-600"></div>
           </div>
         </div>
       </div>
@@ -143,10 +143,10 @@ const LatestUpdates = () => {
 
   if (error) {
     return (
-      <div className="py-12 bg-white">
+      <div className="py-8 md:py-12 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
+          <div className="flex justify-between items-center mb-6 md:mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
               LATEST UPDATES
             </h2>
           </div>
@@ -161,10 +161,10 @@ const LatestUpdates = () => {
 
   if (updates.length === 0) {
     return (
-      <div className="py-12 bg-white">
+      <div className="py-8 md:py-12 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
+          <div className="flex justify-between items-center mb-6 md:mb-8">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
               LATEST UPDATES
             </h2>
           </div>
@@ -177,23 +177,19 @@ const LatestUpdates = () => {
   }
 
   return (
-    <div className="py-12 bg-white">
+    <div className="py-8 md:py-12 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex space-x-6">
-            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
+        <div className="flex justify-between items-center mb-6 md:mb-8">
+          <div className="flex space-x-4 md:space-x-6">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-800 border-b-2 border-blue-600">
               LATEST UPDATES
             </h2>
           </div>
-          {/* <button className="text-blue-600 hover:text-blue-700 font-medium flex items-center">
-            SEE ALL
-            <ArrowRight className="ml-1 w-4 h-4" />
-          </button> */}
         </div>
 
         <div className="relative">
           <div
-            className="flex space-x-6 overflow-x-auto pb-6 hide-scrollbar scroll-smooth"
+            className="flex space-x-4 md:space-x-6 overflow-x-auto pb-6 hide-scrollbar scroll-smooth"
             ref={scrollRef}
             onMouseEnter={() => setIsAutoPlay(false)}
             onMouseLeave={() => setIsAutoPlay(true)}
@@ -201,49 +197,85 @@ const LatestUpdates = () => {
             {updates.map((update, index) => (
               <div
                 key={update._id}
-                className={`min-w-[300px] bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
+                className={`min-w-[280px] md:min-w-[300px] bg-white rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer ${
                   index === activeIndex ? 'ring-2 ring-blue-500 scale-102' : ''
                 }`}
                 onClick={() => openUpdateModal(update)}
               >
-                <div className="relative">
-                  <img
-                    src={update.image}
-                    alt={update.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  {update.isTop && (
-                    <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-full">
-                      TOP
-                    </div>
-                  )}
-                  {index === activeIndex && (
-                    <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
-                      NEW
-                    </div>
-                  )}
-                </div>
-                <div className="p-5">
-                  <div className="flex items-center space-x-2 mb-3">
-                    <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                      Study Material
-                    </span>
-                    <span className="text-gray-400 text-xs">•</span>
-                    <span className="text-gray-500 text-xs flex items-center">
-                      <Clock className="w-3 h-3 mr-1" />
-                      {update.readTime || '5 min read'}
-                    </span>
+                {/* Mobile view: Layout with side-by-side image and content */}
+                <div className="md:hidden flex h-36">
+                  <div className="relative w-1/2">
+                    <img
+                      src={update.image}
+                      alt={update.title}
+                      className="w-full h-full object-cover"
+                    />
+                    {update.isTop && (
+                      <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                        TOP
+                      </div>
+                    )}
+                    {index === activeIndex && (
+                      <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
+                        NEW
+                      </div>
+                    )}
                   </div>
-                  <h3 className="text-lg font-bold mb-2 text-gray-800">{update.title}</h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{update.subtitle}</p>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-gray-500 text-xs">
-                      <Calendar className="w-3 h-3 mr-1" />
-                      <span>{update.date}</span>
+                  <div className="w-1/2 p-3 flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-sm font-bold mb-1 text-gray-800 line-clamp-2">{update.title}</h3>
+                      <p className="text-gray-600 text-xs mb-2 line-clamp-2">{update.subtitle}</p>
                     </div>
-                    <button className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors">
-                      Read More
-                    </button>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-gray-500 text-xs">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span className="text-xs">{update.date}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Desktop view: Original vertical layout */}
+                <div className="hidden md:block">
+                  <div className="relative">
+                    <img
+                      src={update.image}
+                      alt={update.title}
+                      className="w-full h-48 object-cover"
+                    />
+                    {update.isTop && (
+                      <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-full">
+                        TOP
+                      </div>
+                    )}
+                    {index === activeIndex && (
+                      <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
+                        NEW
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-5">
+                    <div className="flex items-center space-x-2 mb-3">
+                      <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                        Study Material
+                      </span>
+                      <span className="text-gray-400 text-xs">•</span>
+                      <span className="text-gray-500 text-xs flex items-center">
+                        <Clock className="w-3 h-3 mr-1" />
+                        {update.readTime || '5 min read'}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-bold mb-2 text-gray-800">{update.title}</h3>
+                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{update.subtitle}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-gray-500 text-xs">
+                        <Calendar className="w-3 h-3 mr-1" />
+                        <span>{update.date}</span>
+                      </div>
+                      <button className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors">
+                        Read More
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -253,20 +285,20 @@ const LatestUpdates = () => {
           {updates.length > 1 && (
             <>
               <button
-                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-colors z-10"
+                className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-1 md:p-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-colors z-10"
                 onClick={handlePrevious}
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
               </button>
               <button
-                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-colors z-10"
+                className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-1 md:p-2 rounded-full shadow-lg hover:bg-blue-600 hover:text-white transition-colors z-10"
                 onClick={handleNext}
               >
-                <ChevronRight className="w-5 h-5" />
+                <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
               </button>
 
               {/* Indicator dots */}
-              <div className="flex justify-center mt-6 space-x-2">
+              <div className="flex justify-center mt-4 md:mt-6 space-x-2">
                 {updates.map((_, index) => (
                   <button
                     key={index}
@@ -288,7 +320,7 @@ const LatestUpdates = () => {
                         }
                       }
                     }}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
+                    className={`w-2 h-2 md:w-2.5 md:h-2.5 rounded-full transition-all duration-300 ${
                       index === activeIndex ? 'bg-blue-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                   ></button>
@@ -299,21 +331,21 @@ const LatestUpdates = () => {
         </div>
       </div>
 
-      {/* Update Modal Popup */}
+      {/* Update Modal Popup - Responsive */}
       {selectedUpdate && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4 animate-fadeIn" onClick={closeUpdateModal}>
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-2 md:p-4 animate-fadeIn" onClick={closeUpdateModal}>
           <div
-            className="bg-white rounded-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col animate-scaleIn"
+            className="bg-white rounded-xl overflow-hidden w-full max-w-4xl max-h-[90vh] flex flex-col animate-scaleIn"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header with close button */}
-            <div className="flex justify-between items-center p-4 border-b">
-              <h2 className="text-xl font-bold">{selectedUpdate.title}</h2>
+            <div className="flex justify-between items-center p-3 md:p-4 border-b">
+              <h2 className="text-base md:text-xl font-bold line-clamp-1">{selectedUpdate.title}</h2>
               <button
                 onClick={closeUpdateModal}
                 className="p-1 rounded-full hover:bg-gray-100 transition-colors"
               >
-                <X className="w-6 h-6 text-gray-700" />
+                <X className="w-5 h-5 md:w-6 md:h-6 text-gray-700" />
               </button>
             </div>
 
@@ -323,41 +355,38 @@ const LatestUpdates = () => {
                 <img
                   src={selectedUpdate.image}
                   alt={selectedUpdate.title}
-                  className="w-full h-[300px] object-cover"
+                  className="w-full h-48 md:h-64 lg:h-72 object-cover"
                 />
                 {selectedUpdate.isTop && (
-                  <div className="absolute top-4 left-4 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full">
+                  <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-full">
                     TOP
                   </div>
                 )}
               </div>
 
               {/* Update Content */}
-              <div className="p-6">
-                <div className="flex items-center mb-4 space-x-4">
-                  <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-1 rounded-full">
+              <div className="p-4 md:p-6">
+                <div className="flex flex-wrap items-center mb-4 gap-2 md:gap-4">
+                  <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 md:px-2.5 md:py-1 rounded-full">
                     Study Material
                   </span>
-                  <div className="text-gray-500 text-sm flex items-center">
-                    <Calendar className="w-4 h-4 mr-1" />
+                  <div className="text-gray-500 text-xs md:text-sm flex items-center">
+                    <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                     {selectedUpdate.date}
                   </div>
-                  <div className="text-gray-500 text-sm flex items-center">
-                    <Clock className="w-4 h-4 mr-1" />
-                    {selectedUpdate.readTime}
+                  <div className="text-gray-500 text-xs md:text-sm flex items-center">
+                    <Clock className="w-3 h-3 md:w-4 md:h-4 mr-1" />
+                    {selectedUpdate.readTime || '5 min read'}
                   </div>
                 </div>
 
                 {/* Article Content */}
-                <div className="prose prose-blue max-w-none">
+                <div className="prose prose-sm md:prose-base prose-blue max-w-none">
                   {selectedUpdate.content}
                 </div>
 
-                <div className="mt-6 flex justify-center">
-                  {/* <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center">
-                    Download Materials
-                    <ArrowRight className="ml-2 w-4 h-4" />
-                  </button> */}
+                <div className="mt-4 md:mt-6 flex justify-center">
+                  {/* Button placeholder for potential actions */}
                 </div>
               </div>
             </div>
