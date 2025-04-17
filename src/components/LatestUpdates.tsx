@@ -202,80 +202,45 @@ const LatestUpdates = () => {
                 }`}
                 onClick={() => openUpdateModal(update)}
               >
-                {/* Mobile view: Layout with side-by-side image and content */}
-                <div className="md:hidden flex h-36">
-                  <div className="relative w-1/2">
-                    <img
-                      src={update.image}
-                      alt={update.title}
-                      className="w-full h-full object-cover"
-                    />
-                    {update.isTop && (
-                      <div className="absolute top-2 left-2 bg-red-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-                        TOP
-                      </div>
-                    )}
-                    {index === activeIndex && (
-                      <div className="absolute top-2 right-2 bg-blue-600 text-white text-xs font-medium px-2 py-0.5 rounded-full">
-                        NEW
-                      </div>
-                    )}
-                  </div>
-                  <div className="w-1/2 p-3 flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-sm font-bold mb-1 text-gray-800 line-clamp-2">{update.title}</h3>
-                      <p className="text-gray-600 text-xs mb-2 line-clamp-2">{update.subtitle}</p>
+                {/* Use the same vertical layout for both mobile and desktop */}
+                <div className="relative">
+                  <img
+                    src={update.image}
+                    alt={update.title}
+                    className="w-full h-40 md:h-48 object-cover"
+                  />
+                  {update.isTop && (
+                    <div className="absolute top-2 left-2 md:top-3 md:left-3 bg-red-600 text-white text-xs font-medium px-2 py-0.5 md:py-1 rounded-full">
+                      TOP
                     </div>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center text-gray-500 text-xs">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        <span className="text-xs">{update.date}</span>
-                      </div>
+                  )}
+                  {index === activeIndex && (
+                    <div className="absolute top-2 right-2 md:top-3 md:right-3 bg-blue-600 text-white text-xs font-medium px-2 py-0.5 md:py-1 rounded-full">
+                      NEW
                     </div>
-                  </div>
+                  )}
                 </div>
-
-                {/* Desktop view: Original vertical layout */}
-                <div className="hidden md:block">
-                  <div className="relative">
-                    <img
-                      src={update.image}
-                      alt={update.title}
-                      className="w-full h-48 object-cover"
-                    />
-                    {update.isTop && (
-                      <div className="absolute top-3 left-3 bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-full">
-                        TOP
-                      </div>
-                    )}
-                    {index === activeIndex && (
-                      <div className="absolute top-3 right-3 bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded-full">
-                        NEW
-                      </div>
-                    )}
+                <div className="p-3 md:p-5">
+                  <div className="flex items-center space-x-2 mb-2 md:mb-3">
+                    <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2 py-0.5 md:px-2.5 md:py-0.5 rounded-full">
+                      Study Material
+                    </span>
+                    <span className="text-gray-400 text-xs">•</span>
+                    <span className="text-gray-500 text-xs flex items-center">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {update.readTime || '5 min read'}
+                    </span>
                   </div>
-                  <div className="p-5">
-                    <div className="flex items-center space-x-2 mb-3">
-                      <span className="bg-blue-100 text-blue-600 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                        Study Material
-                      </span>
-                      <span className="text-gray-400 text-xs">•</span>
-                      <span className="text-gray-500 text-xs flex items-center">
-                        <Clock className="w-3 h-3 mr-1" />
-                        {update.readTime || '5 min read'}
-                      </span>
+                  <h3 className="text-sm md:text-lg font-bold mb-1 md:mb-2 text-gray-800 line-clamp-2">{update.title}</h3>
+                  <p className="text-gray-600 text-xs md:text-sm mb-2 md:mb-4 line-clamp-2">{update.subtitle}</p>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center text-gray-500 text-xs">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      <span>{update.date}</span>
                     </div>
-                    <h3 className="text-lg font-bold mb-2 text-gray-800">{update.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{update.subtitle}</p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center text-gray-500 text-xs">
-                        <Calendar className="w-3 h-3 mr-1" />
-                        <span>{update.date}</span>
-                      </div>
-                      <button className="text-blue-600 font-medium text-sm hover:text-blue-700 transition-colors">
-                        Read More
-                      </button>
-                    </div>
+                    <button className="text-blue-600 font-medium text-xs md:text-sm hover:text-blue-700 transition-colors">
+                      Read More
+                    </button>
                   </div>
                 </div>
               </div>
