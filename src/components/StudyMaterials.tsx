@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Book, ArrowLeft, FileText, Image as ImageIcon, FileIcon, ChevronRight, X, ChevronLeft, ChevronRight as ChevronRightIcon, Bookmark } from 'lucide-react';
 import PDFViewer from './PDFViewer';
@@ -19,8 +19,15 @@ const StudyMaterials = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [lightboxAnimation, setLightboxAnimation] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  
+  // Ref for top of page scrolling
+  const pageTopRef = useRef<HTMLDivElement>(null);
 
   const API_URL = 'https://api.notesmarket.in/api';
+
+  const scrollToTop = () => {
+    pageTopRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
     const fetchSubcategories = async () => {
@@ -35,6 +42,8 @@ const StudyMaterials = () => {
         }
         const data: SubCategoryResponse[] = await response.json();
         setSubcategories(data[0]?.subcategories || []);
+        // Scroll to top when new subcategories are loaded
+        scrollToTop();
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
         console.error('Error fetching subcategories:', err);
@@ -45,10 +54,11 @@ const StudyMaterials = () => {
 
     fetchSubcategories();
     
-    // Handle responsive sidebar
+    // Handle responsive sidebar - keep sidebar open on mobile for visibility
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setIsSidebarOpen(false);
+        // Keep sidebar visible even on mobile by default
+        setIsSidebarOpen(true);
       } else {
         setIsSidebarOpen(true);
       }
@@ -120,12 +130,11 @@ const StudyMaterials = () => {
   };
 
   const handleSubcategoryClick = async (subcategory: SubCategory) => {
+    scrollToTop(); // Scroll to top when clicking on any subcategory
+    
     if (subcategory.type === 'content') {
       setSelectedContent(subcategory);
-      // On mobile, close sidebar when content is selected
-      if (window.innerWidth < 768) {
-        setIsSidebarOpen(false);
-      }
+      // Don't automatically close sidebar on mobile anymore
       return;
     }
 
@@ -148,6 +157,8 @@ const StudyMaterials = () => {
   };
 
   const handleBack = async () => {
+    scrollToTop(); // Scroll to top when navigating back
+    
     if (selectedContent) {
       setSelectedContent(null);
       setActiveTab('all');
@@ -454,7 +465,7 @@ const StudyMaterials = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50" ref={pageTopRef}>
       {/* Header with navigation breadcrumbs */}
       <header className="bg-white shadow-sm sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -489,29 +500,29 @@ const StudyMaterials = () => {
               )}
             </div>
             
-            {/* Mobile sidebar toggle */}
+            {/* Mobile sidebar toggle - now toggles visibility state */}
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="ml-auto md:hidden flex items-center justify-center p-2 rounded-full hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
             >
               <Bookmark className="w-5 h-5" />
-              <span className="ml-1 text-sm font-medium">Categories</span>
+              <span className="ml-1 text-sm font-medium">
+                {isSidebarOpen ? "Hide Categories" : "Show Categories"}
+              </span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Content Area */}
+      {/* Content Area - Modified grid layout for mobile */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Navigation List - conditionally shown on mobile */}
-          <div className={`md:col-span-1 transition-all duration-300 ${
-            isSidebarOpen ? 'block' : 'hidden md:block'
-          }`}>
+        <div className="flex flex-col md:grid md:grid-cols-4 gap-6">
+          {/* Navigation List - Always visible in both mobile and desktop views */}
+          <div className={`${isSidebarOpen ? 'block' : 'hidden'} md:block md:col-span-1 order-2 md:order-1`}>
             <div className="bg-white rounded-xl shadow-sm p-4 md:sticky md:top-20">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Categories</h2>
-                {/* Close button for mobile only */}
+                {/* Close button for mobile now toggling visibility */}
                 <button 
                   onClick={() => setIsSidebarOpen(false)}
                   className="md:hidden p-1 rounded-full hover:bg-gray-100 text-gray-500"
@@ -573,7 +584,7 @@ const StudyMaterials = () => {
           </div>
 
           {/* Content Display */}
-          <div className="md:col-span-3">
+          <div className="md:col-span-3 order-1 md:order-2">
             <div className="bg-white rounded-xl shadow-sm p-4 md:p-6">
               {selectedContent ? (
                 <>
@@ -597,17 +608,19 @@ const StudyMaterials = () => {
                   </div>
                   <h3 className="text-xl font-medium text-gray-900 mb-2">Select a category</h3>
                   <p className="text-gray-500 max-w-md">
-                    Choose a category from the sidebar to view study materials
+                    Choose a category from the list to view study materials
                   </p>
                   
-                  {/* Mobile-only action button */}
-                  <button
-                    onClick={() => setIsSidebarOpen(true)}
-                    className="mt-6 md:hidden bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center"
-                  >
-                    <Bookmark className="w-5 h-5 mr-2" />
-                    Browse Categories
-                  </button>
+                  {/* Mobile-only action button - Just toggle visibility */}
+                  {!isSidebarOpen && (
+                    <button
+                      onClick={() => setIsSidebarOpen(true)}
+                      className="mt-6 md:hidden bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center"
+                    >
+                      <Bookmark className="w-5 h-5 mr-2" />
+                      Show Categories
+                    </button>
+                  )}
                 </div>
               )}
             </div>
