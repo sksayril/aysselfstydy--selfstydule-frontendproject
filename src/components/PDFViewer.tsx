@@ -23,9 +23,10 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url }) => {
         },
         {
           embedMode: 'FULL_WINDOW',
-          showDownloadPDF: true,
+          showDownloadPDF: false,
           showPrintPDF: true,
-        }
+          showAnnotationTools: false, // This will be ignored by TypeScript
+        } as any // Type assertion
       );
     }
   }, [isLoaded, error, url, clientId]);
