@@ -24,7 +24,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ url }) => {
         {
           embedMode: 'FULL_WINDOW',
           showDownloadPDF: false,
-          showPrintPDF: true,
+          showPrintPDF: false,
           showAnnotationTools: false, // This will be ignored by TypeScript
         } as any // Type assertion
       );
