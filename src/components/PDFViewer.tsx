@@ -8,15 +8,16 @@ const useAdobeScript = () => {
   });
 
   useEffect(() => {
-    // Add a global callback that Adobe SDK will call when ready
+    // Define the global callback before loading the script
     window.adobe_dc_view_sdk = window.adobe_dc_view_sdk || {};
     window.adobe_dc_view_sdk.ready = () => {
       console.log('Adobe DC View SDK is ready');
       setScriptState({ isLoaded: true, error: null });
     };
 
-    // Load the script if it's not already loaded
+    // Check if script is already loaded
     if (!document.querySelector('script[src*="documentcloud.adobe.com/view-sdk/main.js"]')) {
+      console.log('Loading Adobe DC SDK script...');
       const script = document.createElement('script');
       script.src = 'https://documentcloud.adobe.com/view-sdk/main.js';
       script.async = true;
@@ -27,23 +28,16 @@ const useAdobeScript = () => {
         setScriptState({ isLoaded: false, error: 'Failed to load Adobe PDF viewer script' });
       };
       
-      // Append script to document
+      // Append script to document head
       document.head.appendChild(script);
     } else if (window.AdobeDC) {
       // Script is already loaded and SDK is available
+      console.log('Adobe DC SDK already loaded');
       setScriptState({ isLoaded: true, error: null });
     }
 
-    // Set a timeout to detect if the SDK fails to initialize
-    const initTimeout = setTimeout(() => {
-      if (!window.AdobeDC) {
-        console.error('Adobe DC SDK initialization timed out');
-        setScriptState({ isLoaded: false, error: 'Failed to initialize Adobe DC SDK' });
-      }
-    }, 10000); // 10 second timeout
-
     return () => {
-      clearTimeout(initTimeout);
+      // Cleanup if needed
     };
   }, []);
 
@@ -57,7 +51,20 @@ const PDFViewer = ({ url }) => {
   const clientId = 'a5927fcb573a4edb8909505c3d84a170'; // Your Client ID
   
   useEffect(() => {
-    if (isLoaded && window.AdobeDC) {
+    let timeoutId;
+    
+    // Set a timeout to check for initialization
+    if (!isLoaded && !error) {
+      timeoutId = setTimeout(() => {
+        if (!window.AdobeDC) {
+          console.error('Adobe DC SDK initialization timed out');
+          setViewerError('Failed to initialize Adobe DC SDK');
+        }
+      }, 10000); // 10 second timeout
+    }
+    
+    // Initialize viewer when SDK is loaded
+    if (isLoaded && !error && window.AdobeDC) {
       try {
         console.log('Initializing Adobe DC View with client ID:', clientId);
         const adobeDCView = new window.AdobeDC.View({
@@ -65,20 +72,19 @@ const PDFViewer = ({ url }) => {
           divId: 'adobe-dc-view',
         });
         
-        console.log('Previewing file:', url);
+        console.log('Previewing PDF file:', url);
         adobeDCView.previewFile(
           {
             content: { location: { url } },
             metaData: { fileName: 'Document.pdf' },
           },
           {
-            embedMode: 'SIZED_CONTAINER',
-            showDownloadPDF: true,
-            showPrintPDF: true,
+            embedMode: 'FULL_WINDOW',
+            showDownloadPDF: false,
+            showPrintPDF: false,
+            showAnnotationTools: false,
           }
-        ).then(() => {
-          console.log('PDF successfully loaded');
-        }).catch(err => {
+        ).catch(err => {
           console.error('Error loading PDF:', err);
           setViewerError(`Error loading PDF: ${err.message || 'Unknown error'}`);
         });
@@ -87,18 +93,16 @@ const PDFViewer = ({ url }) => {
         setViewerError(`Error initializing viewer: ${err.message || 'Unknown error'}`);
       }
     }
-  }, [isLoaded, url, clientId]);
+    
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [isLoaded, error, url, clientId]);
   
-  // Function to handle retry
-  const handleRetry = () => {
-    setViewerError(null);
-    window.location.reload();
-  };
-
   const displayError = error || viewerError;
   
   return (
-    <div className="w-full h-full">
+    <>
       {!isLoaded && !displayError && (
         <div className="flex items-center justify-center h-64">
           <p className="text-lg">Loading PDF document...</p>
@@ -115,7 +119,7 @@ const PDFViewer = ({ url }) => {
           <h3 className="text-xl font-bold">Document Loading Error</h3>
           <p className="mt-2">{displayError}</p>
           <button 
-            onClick={handleRetry} 
+            onClick={() => window.location.reload()} 
             className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
           >
             Retry
@@ -124,9 +128,9 @@ const PDFViewer = ({ url }) => {
       )}
       
       {isLoaded && !displayError && (
-        <div id="adobe-dc-view" className="w-full" style={{ height: "calc(100vh - 100px)" }} />
+        <div id="adobe-dc-view" style={{ height: '100vh', width: '100%' }} />
       )}
-    </div>
+    </>
   );
 };
 
